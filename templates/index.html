@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLDS</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #e2eafc;
+        color: #fff;
+        margin: 0;
+        padding: 0;
+    }
+
+    header,
+    footer {
+        background-color: #abc4ff;
+        color: #22223b;
+        padding: 15px 0;
+        text-align: center;
+        font-size: 20px;
+    }
+
+    .navbar {
+        display: flex;
+        justify-content: center;
+        background-color: #c1d3fe;
+        padding: 10px 0;
+    }
+
+    .navbar a {
+        color: #000000;
+        text-decoration: none;
+        padding: 12px 25px;
+        margin: 0 15px;
+        font-size: 18px;
+    }
+
+    .navbar a:hover {
+        background-color: #edf2fb;
+        border-radius: 4px;
+    }
+
+    .container {
+        max-width: 800px;
+        height: auto;
+        margin: 20px auto;
+        padding: 30px;
+        background-color: #edf2fb;
+        border-radius: 8px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .dev2 {
+        background-color: #edf2fb;
+    }
+
+    .output-image {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    img {
+        max-width: 100%;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+
+    button {
+        background-color: #231942;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    button:hover {
+        background-color: #433177;
+    }
+
+    .upload-info {
+        text-align: center;
+        font-size: 18px;
+        margin-bottom: 20px;
+        color: #130a0a;
+    }
+
+    #fileInput {
+        display: block;
+        margin: 0 auto;
+        padding: 10px;
+        font-size: 18px;
+        border-radius: 5px;
+        background-color: #333;
+        color: #c1d3fe;
+    }
+
+    button[type="submit"] {
+        display: block;
+        margin: 20px auto;
+    }
+
+    /* Center the download button */
+    #downloadButtonDiv {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    #downloadButtonDiv button {
+        margin-top: 20px;
+    }
+</style>
+
+<body>
+
+    <header>
+        <h1>Facial Landmarks Detection with DLIB</h1>
+    </header>
+
+    <div class="navbar">
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+    </div>
+
+    <div class="container">
+        <div class="upload-info">
+            Upload the image
+        </div>
+        <div class="dev2">
+            <form id="uploadForm" enctype="multipart/form-data">
+                <input type="file" name="file" id="fileInput" accept="image/*" required>
+                <br><br>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+
+        <div class="output-image" id="outputImageDiv"></div>
+        <div id="downloadButtonDiv"></div>
+    </div>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <footer>
+        <p>© Facial Landmarks Detection with DLIB. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const fileInput = document.getElementById('fileInput');
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            try {
+                const response = await fetch('/uploadfile/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                const outputImageDiv = document.getElementById('outputImageDiv');
+                const outputImageUrl = result.output_image;
+                outputImageDiv.innerHTML = `<img src="${outputImageUrl}" alt="Processed Image">`;
+
+                const downloadButtonDiv = document.getElementById('downloadButtonDiv');
+                downloadButtonDiv.innerHTML = `<a href="${outputImageUrl}" download="${result.filename}">
+                                                <button>Download Image</button>
+                                              </a>`;
+
+            } catch (error) {
+                console.error('Error uploading file:', error);
+            }
+        });
+    </script>
+
+</body>
+
+</html>
